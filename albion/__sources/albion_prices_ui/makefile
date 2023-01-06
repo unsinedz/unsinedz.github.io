@@ -2,6 +2,7 @@ buildapp:
 	make codegen
 	flutter build web --base-href /albion/
 copy-outputs:
+	find ../.. -mindepth 1 ! -regex '^../../__sources.*' -delete
 	cp -R build/web/* ../../
 publish:
 	make codegen
