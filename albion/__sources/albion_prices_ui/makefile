@@ -1,7 +1,7 @@
-build:
-	flutter build web
+buildapp:
+	flutter build web --base-href /albion/
 copy-outputs:
-	cp build/web/* ../../
+	cp -R build/web/* ../../
 publish:
-	make build
+	make buildapp
 	make copy-outputs
