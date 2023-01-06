@@ -11,6 +11,10 @@ class PricesTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DataTable(
+      headingTextStyle: const TextStyle(
+        fontStyle: FontStyle.italic,
+        fontSize: 16,
+      ),
       columns: const [
         DataColumn(label: ColumnLabel(text: 'Name')),
         DataColumn(label: ColumnLabel(text: 'Enchantment')),
