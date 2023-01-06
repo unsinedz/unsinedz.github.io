@@ -4,6 +4,6 @@ import 'package:flutter/material.dart';
 import 'widgets/app.dart';
 
 void main() {
-  registerDependencies();
+  registerDependencies(isDev: true);
   runApp(const MyApp());
 }
