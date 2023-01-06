@@ -10,6 +10,9 @@ publish:
 	make copy-outputs
 run:
 	make codegen
-	flutter run -t lib/main_dev.dart
+	flutter run -t lib/main_dev.dart --web-port 16969
+run-prod:
+	make codegen
+	flutter run --web-port 16969
 codegen:
 	flutter pub run build_runner build --delete-conflicting-outputs
