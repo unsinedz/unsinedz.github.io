@@ -19,9 +19,12 @@ class HomePage extends StatelessWidget {
         child: Column(
           children: [
             ButtonRow(),
-            SizedBox(
-              width: double.infinity,
-              child: OrdersTable(),
+            SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: SizedBox(
+                width: double.infinity,
+                child: OrdersTable(),
+              ),
             ),
           ],
         ),
