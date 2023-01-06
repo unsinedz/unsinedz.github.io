@@ -14,19 +14,18 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Albion Private Prices'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Column(
-          children: [
-            ButtonRow(),
-            SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: SizedBox(
-                width: double.infinity,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            children: [
+              ButtonRow(),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
                 child: OrdersTable(),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
