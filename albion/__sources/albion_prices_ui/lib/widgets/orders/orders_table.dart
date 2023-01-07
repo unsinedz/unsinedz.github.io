@@ -34,7 +34,9 @@ class OrdersTable extends StatelessWidget {
   List<DataRow> mapTradeSuggestion(TradeSuggestion trade) {
     return [
       CaptionRowBuilder(
-        name: trade.itemId,
+        name: trade.title,
+        enchantment: trade.enchantment,
+        quality: trade.quality,
         sellPrice: trade.sellPrice,
       ).build(),
       ...trade.orders.map(mapOrder),
@@ -46,6 +48,8 @@ class OrdersTable extends StatelessWidget {
       location: order.location,
       quality: order.quality,
       price: order.price,
+      amount: order.amount,
+      enchantment: order.enchantment,
     ).build();
   }
 }

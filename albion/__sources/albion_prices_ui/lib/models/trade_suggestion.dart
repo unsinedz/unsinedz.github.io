@@ -7,7 +7,9 @@ part 'trade_suggestion.g.dart';
 @JsonSerializable()
 class TradeSuggestion {
   const TradeSuggestion({
-    required this.itemId,
+    required this.title,
+    required this.enchantment,
+    required this.quality,
     required this.sellPrice,
     required this.orders,
   });
@@ -17,7 +19,9 @@ class TradeSuggestion {
 
   Map<String, dynamic> toJson() => _$TradeSuggestionToJson(this);
 
-  final String itemId;
+  final String title;
+  final int enchantment;
+  final String quality;
   final int sellPrice;
 
   @JsonKey(name: 'buyOrders')

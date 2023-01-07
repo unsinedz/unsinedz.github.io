@@ -6,8 +6,10 @@ part 'order.g.dart';
 class Order {
   const Order({
     required this.location,
+    required this.enchantment,
     required this.quality,
     required this.price,
+    required this.amount,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
@@ -17,9 +19,15 @@ class Order {
   @JsonKey(name: 'Location')
   final String location;
 
+  @JsonKey(name: 'EnchantmentLevel')
+  final int enchantment;
+
   @JsonKey(name: 'Quality')
   final String quality;
 
   @JsonKey(name: 'UnitPriceSilver')
   final int price;
+
+  @JsonKey(name: 'Amount')
+  final int amount;
 }
