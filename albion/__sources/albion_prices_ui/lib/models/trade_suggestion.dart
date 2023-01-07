@@ -8,6 +8,7 @@ part 'trade_suggestion.g.dart';
 class TradeSuggestion {
   const TradeSuggestion({
     required this.title,
+    required this.tier,
     required this.enchantment,
     required this.quality,
     required this.sellPrice,
@@ -20,6 +21,7 @@ class TradeSuggestion {
   Map<String, dynamic> toJson() => _$TradeSuggestionToJson(this);
 
   final String title;
+  final String tier;
   final int enchantment;
   final String quality;
   final int sellPrice;
