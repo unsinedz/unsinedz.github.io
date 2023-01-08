@@ -34745,7 +34745,7 @@ s=a.d
 q.l(0,B.rJ,s)
 r-=s
 q.l(0,B.rK,r)
-q.l(0,B.rL,""+B.f.iC(r*100,s)+"%")
+q.l(0,B.rL,B.f.iC(r*100,s))
 return new A.f7(q)},
 $S:305}
 A.Yo.prototype={
