@@ -13,6 +13,8 @@ enum OrderColumnKey {
   quality,
   location,
   price,
+  profit,
+  profitPercent,
 }
 
 class OrdersTable extends StatelessWidget {
@@ -27,6 +29,8 @@ class OrdersTable extends StatelessWidget {
     ColumnDescription(
         title: 'Location', key: OrderColumnKey.location, isSortable: false),
     ColumnDescription(title: 'Price', key: OrderColumnKey.price),
+    ColumnDescription(title: 'Profit per sell', key: OrderColumnKey.profit),
+    ColumnDescription(title: 'Profit %', key: OrderColumnKey.profitPercent),
   ];
 
   @override
@@ -59,7 +63,9 @@ class GroupRowBuilder extends OrderRowBuilder {
     fields[OrderColumnKey.enchantment] = '${trade.tier}.${trade.enchantment}';
     fields[OrderColumnKey.quality] = trade.quality;
     fields[OrderColumnKey.location] = '';
-    fields[OrderColumnKey.price] = trade.sellPrice.toString();
+    fields[OrderColumnKey.price] = trade.sellPrice;
+    fields[OrderColumnKey.profit] = '-';
+    fields[OrderColumnKey.profitPercent] = '-';
   }
 
   final TradeSuggestion trade;
@@ -83,7 +89,10 @@ class BuyOrderRowBuilder extends OrderRowBuilder {
     fields[OrderColumnKey.enchantment] = '${trade.tier}.${order.enchantment}';
     fields[OrderColumnKey.quality] = order.quality;
     fields[OrderColumnKey.location] = order.location;
-    fields[OrderColumnKey.price] = order.price.toString();
+    fields[OrderColumnKey.price] = order.price;
+    fields[OrderColumnKey.profit] = trade.sellPrice - order.price;
+    fields[OrderColumnKey.profitPercent] =
+        '${(trade.sellPrice - order.price) ~/ order.price}%';
   }
 }
 
