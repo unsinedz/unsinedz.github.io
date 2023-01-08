@@ -56,7 +56,7 @@ class GroupRowBuilder extends OrderRowBuilder {
           cellTextStyle: const TextStyle(fontWeight: FontWeight.w600),
         ) {
     fields[OrderColumnKey.name] = trade.title;
-    fields[OrderColumnKey.enchantment] = trade.enchantment.toString();
+    fields[OrderColumnKey.enchantment] = '${trade.tier}.${trade.enchantment}';
     fields[OrderColumnKey.quality] = trade.quality;
     fields[OrderColumnKey.location] = '';
     fields[OrderColumnKey.price] = trade.sellPrice.toString();
@@ -67,7 +67,7 @@ class GroupRowBuilder extends OrderRowBuilder {
   @override
   List<DataRow> build(List<ColumnDescription<OrderColumnKey>> columnNames) {
     return <RowBuilder>[
-      ...trade.orders.map((x) => BuyOrderRowBuilder(x)),
+      ...trade.orders.map((x) => BuyOrderRowBuilder(trade, x)),
     ]
         .map((e) => e.build(columnNames))
         .fold(
@@ -78,9 +78,9 @@ class GroupRowBuilder extends OrderRowBuilder {
 }
 
 class BuyOrderRowBuilder extends OrderRowBuilder {
-  BuyOrderRowBuilder(Order order) {
+  BuyOrderRowBuilder(TradeSuggestion trade, Order order) {
     fields[OrderColumnKey.name] = 'Amount: ${order.amount}';
-    fields[OrderColumnKey.enchantment] = order.enchantment.toString();
+    fields[OrderColumnKey.enchantment] = '${trade.tier}.${order.enchantment}';
     fields[OrderColumnKey.quality] = order.quality;
     fields[OrderColumnKey.location] = order.location;
     fields[OrderColumnKey.price] = order.price.toString();
