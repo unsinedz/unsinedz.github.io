@@ -103,7 +103,7 @@ class CellContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text, style: textStyle);
+    return SelectableText(text, style: textStyle);
   }
 }
 
