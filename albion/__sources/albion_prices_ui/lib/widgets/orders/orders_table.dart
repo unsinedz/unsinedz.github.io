@@ -73,7 +73,7 @@ class BuyOrderRowBuilder extends OrderRowBuilder {
     fields[OrderColumnKey.buyPrice] = order.price;
     fields[OrderColumnKey.profit] = trade.sellPrice - order.price;
     fields[OrderColumnKey.profitPercent] =
-        '${(trade.sellPrice - order.price) * 100 ~/ order.price}%';
+        (trade.sellPrice - order.price) * 100 ~/ order.price;
   }
 }
 
