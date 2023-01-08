@@ -52,10 +52,9 @@ class _PricesTableState<T> extends State<PricesTable<T>> {
     var rows = widget.rows;
     if (_sortColumnIndex != null) {
       final sortField = widget.columns[_sortColumnIndex!].key;
-      rows.sort((a, b) => a.fields[sortField]!.compareTo(b.fields[sortField]!));
-      if (!_sortAscending) {
-        return rows.reversed;
-      }
+      rows.sort((a, b) =>
+          a.fields[sortField]!.compareTo(b.fields[sortField]!) *
+          (_sortAscending ? 1 : -1));
     }
 
     return rows;
