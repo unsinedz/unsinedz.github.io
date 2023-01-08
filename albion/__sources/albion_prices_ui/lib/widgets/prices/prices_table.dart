@@ -14,6 +14,7 @@ class PricesTable extends StatelessWidget {
       headingTextStyle: const TextStyle(
         fontStyle: FontStyle.italic,
         fontSize: 16,
+        color: Colors.grey,
       ),
       columns: const [
         DataColumn(label: ColumnLabel(text: 'Name')),
