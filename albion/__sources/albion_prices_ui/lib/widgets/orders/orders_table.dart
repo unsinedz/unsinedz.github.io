@@ -7,10 +7,27 @@ import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
 
+enum OrderColumnKey {
+  name,
+  enchantment,
+  quality,
+  location,
+  price,
+}
+
 class OrdersTable extends StatelessWidget {
   OrdersTable({super.key});
 
   final OrderStore store = getIt.get<OrderStore>();
+
+  final List<ColumnDescription<OrderColumnKey>> columnNames = const [
+    ColumnDescription(title: 'Name', key: OrderColumnKey.name),
+    ColumnDescription(title: 'Enchantment', key: OrderColumnKey.enchantment),
+    ColumnDescription(title: 'Quality', key: OrderColumnKey.quality),
+    ColumnDescription(
+        title: 'Location', key: OrderColumnKey.location, isSortable: false),
+    ColumnDescription(title: 'Price', key: OrderColumnKey.price),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -22,34 +39,77 @@ class OrdersTable extends StatelessWidget {
         }
 
         final tradeSuggestions = snapshot.data ?? [];
-        final rows = tradeSuggestions.map(mapTradeSuggestion).fold(
-          <DataRow>[],
-          (previousValue, element) => previousValue..addAll(element),
+        final rows = tradeSuggestions.map((x) => GroupRowBuilder(x)).toList();
+        return PricesTable<OrderColumnKey>(
+          columns: columnNames,
+          rows: rows,
         );
-        return PricesTable(rows: rows);
       },
     );
   }
+}
 
-  List<DataRow> mapTradeSuggestion(TradeSuggestion trade) {
+class GroupRowBuilder extends OrderRowBuilder {
+  GroupRowBuilder(this.trade)
+      : super(
+          rowBackgroundColor: Colors.green.shade200,
+          cellTextStyle: const TextStyle(fontWeight: FontWeight.w600),
+        ) {
+    fields[OrderColumnKey.name] = trade.title;
+    fields[OrderColumnKey.enchantment] = trade.enchantment.toString();
+    fields[OrderColumnKey.quality] = trade.quality;
+    fields[OrderColumnKey.location] = '';
+    fields[OrderColumnKey.price] = trade.sellPrice.toString();
+  }
+
+  final TradeSuggestion trade;
+
+  @override
+  List<DataRow> build(List<ColumnDescription<OrderColumnKey>> columnNames) {
+    return <RowBuilder>[
+      ...trade.orders.map((x) => BuyOrderRowBuilder(x)),
+    ]
+        .map((e) => e.build(columnNames))
+        .fold(
+            super.build(columnNames), // build group heading row
+            (previousValue, element) => previousValue..addAll(element))
+        .toList();
+  }
+}
+
+class BuyOrderRowBuilder extends OrderRowBuilder {
+  BuyOrderRowBuilder(Order order) {
+    fields[OrderColumnKey.name] = 'Amount: ${order.amount}';
+    fields[OrderColumnKey.enchantment] = order.enchantment.toString();
+    fields[OrderColumnKey.quality] = order.quality;
+    fields[OrderColumnKey.location] = order.location;
+    fields[OrderColumnKey.price] = order.price.toString();
+  }
+}
+
+class OrderRowBuilder extends RowBuilder<OrderColumnKey> {
+  OrderRowBuilder({
+    this.rowBackgroundColor = Colors.white,
+    this.cellTextStyle,
+  });
+
+  final Color rowBackgroundColor;
+  final TextStyle? cellTextStyle;
+
+  @override
+  List<DataRow> build(List<ColumnDescription<OrderColumnKey>> columnNames) {
     return [
-      CaptionRowBuilder(
-        name: '${trade.tier} ${trade.title}',
-        enchantment: trade.enchantment,
-        quality: trade.quality,
-        sellPrice: trade.sellPrice,
-      ).build(),
-      ...trade.orders.map(mapOrder),
+      DataRow(
+        cells: columnNames.map((e) => buildCell(e.key)).toList(),
+        color: MaterialStateColor.resolveWith((states) => rowBackgroundColor),
+      )
     ];
   }
 
-  DataRow mapOrder(Order order) {
-    return OrderRowBuilder(
-      location: order.location,
-      quality: order.quality,
-      price: order.price,
-      amount: order.amount,
-      enchantment: order.enchantment,
-    ).build();
+  DataCell buildCell(OrderColumnKey key) {
+    final value = fields[key];
+    return DataCell(
+      CellContent(text: value!.toString(), textStyle: cellTextStyle),
+    );
   }
 }

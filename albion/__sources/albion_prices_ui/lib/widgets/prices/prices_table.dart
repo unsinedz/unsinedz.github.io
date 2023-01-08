@@ -1,29 +1,77 @@
 import 'package:flutter/material.dart';
 
-class PricesTable extends StatelessWidget {
+class ColumnDescription<TKey> {
+  const ColumnDescription({
+    required this.title,
+    required this.key,
+    this.isSortable = true,
+  });
+
+  final String title;
+  final TKey key;
+  final bool isSortable;
+}
+
+class PricesTable<TColumnKey> extends StatefulWidget {
   const PricesTable({
     super.key,
+    required this.columns,
     required this.rows,
   });
 
-  final List<DataRow> rows;
+  final List<ColumnDescription<TColumnKey>> columns;
+  final List<RowBuilder> rows;
+
+  @override
+  State<PricesTable<TColumnKey>> createState() =>
+      _PricesTableState<TColumnKey>();
+}
+
+class _PricesTableState<T> extends State<PricesTable<T>> {
+  int? _sortColumnIndex;
+  bool _sortAscending = true;
 
   @override
   Widget build(BuildContext context) {
     return DataTable(
+      sortColumnIndex: _sortColumnIndex,
+      sortAscending: _sortAscending,
       headingTextStyle: const TextStyle(
         fontStyle: FontStyle.italic,
         fontSize: 16,
         color: Colors.grey,
       ),
-      columns: const [
-        DataColumn(label: ColumnLabel(text: 'Name')),
-        DataColumn(label: ColumnLabel(text: 'Enchantment')),
-        DataColumn(label: ColumnLabel(text: 'Quality')),
-        DataColumn(label: ColumnLabel(text: 'Location')),
-        DataColumn(label: ColumnLabel(text: 'Price')),
-      ],
-      rows: rows,
+      columns: widget.columns.map(buildDataColumn).toList(),
+      rows: getOrdersRows().map((e) => e.build(widget.columns)).fold(
+          <DataRow>[],
+          (previousValue, element) => previousValue..addAll(element)).toList(),
+    );
+  }
+
+  Iterable<RowBuilder> getOrdersRows() {
+    var rows = widget.rows;
+    if (_sortColumnIndex != null) {
+      final sortField = widget.columns[_sortColumnIndex!].key;
+      rows.sort((a, b) => a.fields[sortField]!.compareTo(b.fields[sortField]!));
+      if (!_sortAscending) {
+        return rows.reversed;
+      }
+    }
+
+    return rows;
+  }
+
+  DataColumn buildDataColumn(ColumnDescription columnName) {
+    onSort(int columnIndex, bool ascending) {
+      setState(() {
+        _sortColumnIndex = columnIndex;
+        _sortAscending = ascending;
+      });
+    }
+
+    return DataColumn(
+      label: ColumnLabel(text: columnName.title),
+      onSort: columnName.isSortable ? onSort : null,
     );
   }
 }
@@ -60,61 +108,8 @@ class CellContent extends StatelessWidget {
   }
 }
 
-class OrderRowBuilder {
-  const OrderRowBuilder({
-    required this.location,
-    required this.quality,
-    required this.price,
-    required this.amount,
-    required this.enchantment,
-  });
+abstract class RowBuilder<TColumnKey> {
+  final Map<TColumnKey, Comparable> fields = <TColumnKey, Comparable>{};
 
-  final int amount;
-  final int enchantment;
-  final String quality;
-  final String location;
-  final int price;
-
-  DataRow build() {
-    return DataRow(
-      color: MaterialStateColor.resolveWith((states) => Colors.grey.shade300),
-      cells: [
-        DataCell(CellContent(text: 'Amount: $amount')),
-        DataCell(CellContent(text: enchantment.toString())),
-        DataCell(CellContent(text: quality)),
-        DataCell(CellContent(text: location)),
-        DataCell(CellContent(text: price.toString())),
-      ],
-    );
-  }
-}
-
-class CaptionRowBuilder {
-  const CaptionRowBuilder({
-    required this.name,
-    required this.enchantment,
-    required this.quality,
-    required this.sellPrice,
-  });
-
-  final String name;
-  final int enchantment;
-  final String quality;
-  final int sellPrice;
-
-  final TextStyle textStyle = const TextStyle(fontWeight: FontWeight.w600);
-
-  DataRow build() {
-    return DataRow(
-      cells: [
-        DataCell(CellContent(text: name, textStyle: textStyle)),
-        DataCell(
-            CellContent(text: enchantment.toString(), textStyle: textStyle)),
-        DataCell(CellContent(text: quality.toString(), textStyle: textStyle)),
-        DataCell(CellContent(text: '', textStyle: textStyle)),
-        DataCell(CellContent(text: sellPrice.toString(), textStyle: textStyle)),
-      ],
-      color: MaterialStateColor.resolveWith((states) => Colors.green.shade200),
-    );
-  }
+  List<DataRow> build(List<ColumnDescription<TColumnKey>> columnNames);
 }
