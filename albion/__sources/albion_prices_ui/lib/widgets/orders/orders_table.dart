@@ -11,8 +11,10 @@ enum OrderColumnKey {
   name,
   enchantment,
   quality,
-  location,
-  price,
+  sellLocation,
+  sellPrice,
+  buyLocation,
+  buyPrice,
   profit,
   profitPercent,
 }
@@ -26,9 +28,10 @@ class OrdersTable extends StatelessWidget {
     ColumnDescription(title: 'Name', key: OrderColumnKey.name),
     ColumnDescription(title: 'Enchantment', key: OrderColumnKey.enchantment),
     ColumnDescription(title: 'Quality', key: OrderColumnKey.quality),
-    ColumnDescription(
-        title: 'Location', key: OrderColumnKey.location, isSortable: false),
-    ColumnDescription(title: 'Price', key: OrderColumnKey.price),
+    ColumnDescription(title: 'Sell location', key: OrderColumnKey.sellLocation),
+    ColumnDescription(title: 'Sell price', key: OrderColumnKey.sellPrice),
+    ColumnDescription(title: 'Buy location', key: OrderColumnKey.buyLocation),
+    ColumnDescription(title: 'Buy price', key: OrderColumnKey.buyPrice),
     ColumnDescription(title: 'Profit per sell', key: OrderColumnKey.profit),
     ColumnDescription(title: 'Profit %', key: OrderColumnKey.profitPercent),
   ];
@@ -43,7 +46,13 @@ class OrdersTable extends StatelessWidget {
         }
 
         final tradeSuggestions = snapshot.data ?? [];
-        final rows = tradeSuggestions.map((x) => GroupRowBuilder(x)).toList();
+        final rows = tradeSuggestions
+            .map((trade) =>
+                trade.orders.map((x) => BuyOrderRowBuilder(trade, x)))
+            .fold(
+          <RowBuilder>[],
+          (previousValue, element) => previousValue..addAll(element),
+        ).toList();
         return PricesTable<OrderColumnKey>(
           columns: columnNames,
           rows: rows,
@@ -53,43 +62,15 @@ class OrdersTable extends StatelessWidget {
   }
 }
 
-class GroupRowBuilder extends OrderRowBuilder {
-  GroupRowBuilder(this.trade)
-      : super(
-          rowBackgroundColor: Colors.green.shade200,
-          cellTextStyle: const TextStyle(fontWeight: FontWeight.w600),
-        ) {
-    fields[OrderColumnKey.name] = trade.title;
-    fields[OrderColumnKey.enchantment] = '${trade.tier}.${trade.enchantment}';
-    fields[OrderColumnKey.quality] = trade.quality;
-    fields[OrderColumnKey.location] = '';
-    fields[OrderColumnKey.price] = trade.sellPrice;
-    fields[OrderColumnKey.profit] = '-';
-    fields[OrderColumnKey.profitPercent] = '-';
-  }
-
-  final TradeSuggestion trade;
-
-  @override
-  List<DataRow> build(List<ColumnDescription<OrderColumnKey>> columnNames) {
-    return <RowBuilder>[
-      ...trade.orders.map((x) => BuyOrderRowBuilder(trade, x)),
-    ]
-        .map((e) => e.build(columnNames))
-        .fold(
-            super.build(columnNames), // build group heading row
-            (previousValue, element) => previousValue..addAll(element))
-        .toList();
-  }
-}
-
 class BuyOrderRowBuilder extends OrderRowBuilder {
   BuyOrderRowBuilder(TradeSuggestion trade, Order order) {
     fields[OrderColumnKey.name] = trade.title;
     fields[OrderColumnKey.enchantment] = '${trade.tier}.${order.enchantment}';
     fields[OrderColumnKey.quality] = order.quality;
-    fields[OrderColumnKey.location] = order.location;
-    fields[OrderColumnKey.price] = order.price;
+    fields[OrderColumnKey.sellLocation] = 'Black Market';
+    fields[OrderColumnKey.sellPrice] = trade.sellPrice;
+    fields[OrderColumnKey.buyLocation] = order.location;
+    fields[OrderColumnKey.buyPrice] = order.price;
     fields[OrderColumnKey.profit] = trade.sellPrice - order.price;
     fields[OrderColumnKey.profitPercent] =
         '${(trade.sellPrice - order.price) ~/ order.price}%';
