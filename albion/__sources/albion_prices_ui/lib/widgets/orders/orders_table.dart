@@ -79,7 +79,7 @@ class GroupRowBuilder extends OrderRowBuilder {
 
 class BuyOrderRowBuilder extends OrderRowBuilder {
   BuyOrderRowBuilder(TradeSuggestion trade, Order order) {
-    fields[OrderColumnKey.name] = 'Amount: ${order.amount}';
+    fields[OrderColumnKey.name] = trade.title;
     fields[OrderColumnKey.enchantment] = '${trade.tier}.${order.enchantment}';
     fields[OrderColumnKey.quality] = order.quality;
     fields[OrderColumnKey.location] = order.location;
