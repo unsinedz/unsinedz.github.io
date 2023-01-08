@@ -17,14 +17,16 @@ class HomePage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            children: [
-              ButtonRow(),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: OrdersTable(),
-              ),
-            ],
+          child: Center(
+            child: Column(
+              children: [
+                ButtonRow(),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: OrdersTable(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -39,17 +41,14 @@ class ButtonRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15),
-        child: SizedBox(
-          width: 100,
-          height: 30,
-          child: ElevatedButton(
-            onPressed: onStart,
-            child: const Text("Refresh"),
-          ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 15),
+      child: SizedBox(
+        width: 100,
+        height: 30,
+        child: ElevatedButton(
+          onPressed: onStart,
+          child: const Text("Refresh"),
         ),
       ),
     );
