@@ -6,7 +6,7 @@ copy-outputs:
 	cp -R build/web/* ../../
 publish:
 	make codegen
-	flutter build web --release --base-href /albion/
+	flutter build web --release --base-href /albion/ --web-renderer html
 	make copy-outputs
 run:
 	make codegen
