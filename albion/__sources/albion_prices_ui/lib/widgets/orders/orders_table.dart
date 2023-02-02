@@ -42,7 +42,7 @@ class OrdersTable extends StatelessWidget {
       stream: store.tradeSuggestions,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const Text('Press "Refresh" to start');
+          return Text('An error occurred. Details: ${snapshot.error}');
         }
 
         final tradeSuggestions = snapshot.data ?? [];
@@ -53,6 +53,10 @@ class OrdersTable extends StatelessWidget {
           <RowBuilder>[],
           (previousValue, element) => previousValue..addAll(element),
         ).toList();
+        if (rows.isEmpty) {
+          return const Text('No data is available. Press "Refresh" to start.');
+        }
+
         return PricesTable<OrderColumnKey>(
           columns: columnNames,
           rows: rows,
