@@ -18,6 +18,13 @@ class _ProfitFilterState extends State<ProfitFilter> {
   int? _value = options[3];
 
   @override
+  void initState() {
+    widget.onChanged(_value!);
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [

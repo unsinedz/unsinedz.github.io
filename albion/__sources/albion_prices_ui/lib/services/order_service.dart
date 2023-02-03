@@ -11,5 +11,6 @@ abstract class OrderService {
       _OrderService(dio, baseUrl: baseUrl);
 
   @GET('/orders')
-  Future<OrdersResponse> getTradeSuggestions();
+  Future<OrdersResponse> getTradeSuggestions(
+      @Query("income_threshold_percent") int? minimumProfitPercent);
 }

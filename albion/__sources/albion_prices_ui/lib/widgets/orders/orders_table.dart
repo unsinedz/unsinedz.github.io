@@ -3,7 +3,6 @@ import 'package:albion_prices_ui/widgets/store/order_store.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import 'profit_filter.dart';
 import 'row_builders.dart';
 
 final getIt = GetIt.instance;
@@ -58,18 +57,9 @@ class OrdersTable extends StatelessWidget {
           return const Text('No data is available. Press "Refresh" to start.');
         }
 
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ProfitFilter(
-              onChanged: (value) {},
-            ),
-            const SizedBox(height: 10),
-            PricesTable<OrderColumnKey>(
-              columns: columnNames,
-              rows: rows,
-            ),
-          ],
+        return PricesTable<OrderColumnKey>(
+          columns: columnNames,
+          rows: rows,
         );
       },
     );
